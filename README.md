@@ -2,7 +2,7 @@
 
 ## Snake game written using graphics library.
 
-This is my version of the classic Snake game implemented in Python using the Turtle graphics module. Guide the snake to collect food, grow longer, and avoid collisions with walls and itself. The game features additional food items with special effects, such as slowing down or mirroring the snake.
+This is my version of the classic Snake game implemented in Python using the Turtle graphics module. Guide the snake to collect food, grow longer, and avoid collisions with walls and itself. The game features additional food items with special effects, such as slowing down or disabling wall collisions.
 
 ### Features
 - Basic Snake Movement: Control the snake using arrow keys.
