@@ -121,6 +121,7 @@ def tail_collisions():
             while game_paused:
                 pause_game()
             game_over.clear()
+            break
 
 
 def check_collisions():
