@@ -6,160 +6,152 @@ from scoreboard import ScoreBoard
 from game_over import GameOver
 from random import randint
 
-# Set up the screen
-screen = Screen()
-screen.setup(600, 600)
-screen.bgcolor("black")
-screen.title("My Snake Game")
-screen.tracer(0)
-
-# Create game objects
-snake = Snake()
-food = Food()
-score = ScoreBoard()
-game_over = GameOver()
-
-# Initialise game state variables
-sleep_time = 0.1
-invisible = False
-slow = False
-mirror = False
-game_paused = False
-game_is_on = True
+# Constants
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 600
+BACKGROUND_COLOR = "black"
+TITLE = "My Snake Game"
+INITIAL_SLEEP_TIME = 0.1
+FOOD_DISTANCE_THRESHOLD = 16
+WALL_DISTANCE_THRESHOLD = 280
+TAIL_DISTANCE_THRESHOLD = 10
 
 
-def restart_game():
-    """Restarts the game by resetting game state and objects"""
-    global sleep_time, invisible, slow, mirror, game_paused
-    game_paused = False
-    sleep_time = 0.1
-    invisible = False
-    slow = False
-    mirror = False
-    score.reset_scoreboard()
-    snake.reset()
-    reset_food_properties()
-    screen.update()
+class SnakeGame:
+    def __init__(self):
+        self.screen = Screen()
+        self.screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.screen.bgcolor(BACKGROUND_COLOR)
+        self.screen.title(TITLE)
+        self.screen.tracer(0)
 
+        self.snake = Snake()
+        self.food = Food()
+        self.score = ScoreBoard()
+        self.game_over = GameOver()
 
-def quit_game():
-    """Quits game by closing the screen"""
-    screen.bye()
+        self.sleep_time = INITIAL_SLEEP_TIME
+        self.invisible = False
+        self.slow = False
+        self.mirror = False
+        self.game_paused = False
+        self.game_is_on = True
 
+        self.screen.listen()
+        self.screen.onkey(self.snake.up, "Up")
+        self.screen.onkey(self.snake.down, "Down")
+        self.screen.onkey(self.snake.left, "Left")
+        self.screen.onkey(self.snake.right, "Right")
+        self.screen.onscreenclick(self.handle_click)
 
-def handle_click(x, y):
-    """Handles the screen click event for game over actions."""
-    if game_paused:
-        action = game_over.check_click(x, y)
-        if action == "restart":
-            restart_game()
-        elif action == "quit":
-            quit_game()
+    def restart_game(self):
+        """Restarts the game by resetting game state and objects."""
+        self.game_paused = False
+        self.sleep_time = INITIAL_SLEEP_TIME
+        self.invisible = False
+        self.slow = False
+        self.mirror = False
+        self.score.reset_scoreboard()
+        self.snake.reset()
+        self.reset_food_properties()
+        self.screen.update()
 
+    def quit_game(self):
+        """Quits the game by closing the screen."""
+        self.game_is_on = False
+        self.screen.bye()
 
-def reset_food_properties():
-    """Sets random food property and moves it to a new location"""
-    global slow, mirror
-    random_num = randint(0, 6)
-    if random_num == 1:
-        slow = True
-        food.color('green')
-    elif random_num == 2:
-        mirror = True
-        food.color('red')
-    else:
-        food.color('blue')
-    food.move_location()
+    def handle_click(self, x, y):
+        """Handles screen click events for game over actions."""
+        if self.game_paused:
+            action = self.game_over.check_click(x, y)
+            if action == "restart":
+                self.restart_game()
+            elif action == "quit":
+                self.quit_game()
 
-
-def food_collision():
-    """Handles the effects of the snake when colliding with food"""
-    global sleep_time, invisible, mirror, slow
-    if slow:
-        sleep_time = 0.2
-        invisible = False
-        slow = False
-    elif mirror:
-        invisible = True
-        sleep_time = 0.1
-        mirror = False
-    else:
-        sleep_time = 0.1
-        invisible = False
-
-
-def pause_game():
-    """Displays game over screen and pauses game play"""
-    game_over.display()
-    screen.update()
-    time.sleep(0.3)
-
-
-def wall_collisions():
-    """Handles collisions with the walls"""
-    global game_paused
-    if abs(snake.head.xcor()) > 280 or abs(snake.head.ycor()) > 280:
-        if invisible:
-            if abs(snake.head.xcor()) > 280:
-                snake.teleport_x()
-            elif abs(snake.head.ycor()) > 280:
-                snake.teleport_y()
-
+    def reset_food_properties(self):
+        """Randomizes food properties and moves it to a new location."""
+        random_num = randint(0, 6)
+        if random_num == 1:
+            self.slow = True
+            self.food.color('green')
+        elif random_num == 2:
+            self.mirror = True
+            self.food.color('red')
         else:
-            game_paused = True
-            while game_paused:
-                pause_game()
-            game_over.clear()
+            self.food.color('blue')
+        self.food.move_location()
+
+    def food_collision(self):
+        """Handles the effects of the snake colliding with food."""
+        if self.slow:
+            self.sleep_time = 0.2
+            self.invisible = False
+            self.slow = False
+        elif self.mirror:
+            self.invisible = True
+            self.sleep_time = 0.1
+            self.mirror = False
+        else:
+            self.sleep_time = 0.1
+            self.invisible = False
+
+    def pause_game(self):
+        """Displays the game over screen and pauses the game."""
+        self.game_over.display()
+        self.screen.update()
+        time.sleep(0.3)
+
+    def wall_collisions(self):
+        """Handles collisions of the snake with the walls."""
+        if abs(self.snake.head.xcor()) > WALL_DISTANCE_THRESHOLD or abs(self.snake.head.ycor()) > WALL_DISTANCE_THRESHOLD:
+            if self.invisible:
+                if abs(self.snake.head.xcor()) > WALL_DISTANCE_THRESHOLD:
+                    self.snake.teleport_x()
+                elif abs(self.snake.head.ycor()) > WALL_DISTANCE_THRESHOLD:
+                    self.snake.teleport_y()
+            else:
+                self.game_paused = True
+                while self.game_paused:
+                    self.pause_game()
+                self.game_over.clear()
+
+    def tail_collisions(self):
+        """Handles collisions of the snake with its own tail."""
+        for segment in self.snake.segments[1:]:
+            if self.snake.head.distance(segment) < TAIL_DISTANCE_THRESHOLD and not self.invisible:
+                self.game_paused = True
+                while self.game_paused:
+                    self.pause_game()
+                self.game_over.clear()
+                break  # Exit loop early if collision is detected
+
+    def check_collisions(self):
+        """Checks and handles all types of collisions in the game."""
+        # Detect collisions with food
+        if self.snake.head.distance(self.food) < FOOD_DISTANCE_THRESHOLD:
+            self.snake.extend()
+            self.score.increase_score()
+            self.food_collision()
+            self.reset_food_properties()
+
+        # Detect collision with wall
+        self.wall_collisions()
+
+        # Detect collision with tail
+        self.tail_collisions()
+
+    def main_game_loop(self):
+        """Main game loop to continuously update the game state."""
+        while self.game_is_on:
+            self.screen.update()
+            time.sleep(self.sleep_time)
+            self.snake.move()
+            self.check_collisions()
 
 
-def tail_collisions():
-    """Handles collisions of the snake with its own tail"""
-    global game_paused
-    for segment in snake.segments[1:]:
-        if snake.head.distance(segment) < 10 and not invisible:
-            game_paused = True
-            while game_paused:
-                pause_game()
-            game_over.clear()
-            break
-
-
-def check_collisions():
-    """Handles the overarching logic for all collisions"""
-    # Detect collisions with food
-    if snake.head.distance(food) < 16:
-        snake.extend()
-        score.increase_score()
-        food_collision()
-        reset_food_properties()
-
-    # detect collision with wall
-    wall_collisions()
-
-    # detect collision with tail
-    tail_collisions()
-
-
-def main_game_loop():
-    """Main gameplay loop to continuously update game state"""
-    global game_is_on
-
-    while game_is_on:
-        screen.update()
-        time.sleep(sleep_time)
-        snake.move()
-        check_collisions()
-
-
-# Bind keyboard events
-screen.listen()
-screen.onkey(snake.up, "Up")
-screen.onkey(snake.down, "Down")
-screen.onkey(snake.left, "Left")
-screen.onkey(snake.right, "Right")
-screen.onscreenclick(handle_click)
-
-# Run the game
-main_game_loop()
-
-screen.exitonclick()
+if __name__ == "__main__":
+    game = SnakeGame()
+    game.main_game_loop()
+    game.screen.exitonclick()
