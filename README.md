@@ -21,7 +21,7 @@ Guide the snake to collect food, grow longer, and avoid collisions with walls an
   
 ### Special Food Effects:
 - Green Food: Slows down the snake.
-- Red Food: Enables the snake to teleport through walls.
+- Red Food: Disables collisions.
 - Blue Food: Normal behavior.
 
 ## How to Play
