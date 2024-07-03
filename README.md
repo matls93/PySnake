@@ -2,7 +2,9 @@
 
 ## Snake game written using graphics library.
 
-This is my version of the classic Snake game implemented in Python using the Turtle graphics module. Guide the snake to collect food, grow longer, and avoid collisions with walls and itself. The game features additional food items with special effects, such as slowing down or disabling wall collisions.
+This is my version of the classic Snake game implemented in Python using the Turtle graphics module, adapted and expanded from a Udemy course. 
+
+Guide the snake to collect food, grow longer, and avoid collisions with walls and itself. The game features additional food items with special effects, such as slowing down or disabling wall collisions.
 
 ### Features
 - Basic Snake Movement: Control the snake using arrow keys.
@@ -35,7 +37,7 @@ This is my version of the classic Snake game implemented in Python using the Tur
 - Performance issues when the snake gets too long.
 
 ### Acknowledgements
-- Adapted from Initial tutorial from Dr. Angela Yu Udemy course: https://www.udemy.com/course/100-days-of-code/
+- This code was initialled based on code from a Python tutorial by Dr. Angela Yu on Udemy: https://www.udemy.com/course/100-days-of-code/
 - Game over screen logic implemented with the help of ChatGPT.
 
 ### Future Enhancements
@@ -47,7 +49,7 @@ This is my version of the classic Snake game implemented in Python using the Tur
 
 This project is a personal learning exercise and may contain bugs or incomplete features. It was originally developed as part of a course and later extended with additional functionality. Please note the following:
 
-- **Learning Purpose**: This project was primarily created to practice Python programming and game development concepts. The use use of graphics library rather than a gaming library is purely educational and fun.
+- **Learning Purpose**: This project was primarily created to practice Python programming and game development concepts. The use of a graphics library rather than a gaming library is purely educational and fun.
 - **Bug Notice**: There may be bugs or unexpected behavior, especially in edge cases or specific environments.
 - **Dependencies**: A requirements file is not yet provided.
 - **Use at Your Own Risk**: While efforts have been made to ensure the game functions correctly, there are no guarantees of performance or reliability. Use the software at your own risk.
